@@ -5,7 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserDetails } from '../models/UserDetails';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -14,15 +14,16 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     public jwtHelper: JwtHelperService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   login(credentials): Observable<boolean> {
+    this.route.snapshot.queryParamMap.get('returnUrl');
     return this.http
       .post(`${environment.apiUrl}/auth/signin`, credentials)
       .pipe(
         map((response: UserDetails) => {
-          console.log(this.jwtHelper.decodeToken(response.accessToken));
           const result = response;
           if (result && result.accessToken) {
             localStorage.setItem('token', result.accessToken);

@@ -1,20 +1,21 @@
 import { Product } from './product';
 import { ShoppingCartItem } from './shopping-cart-item';
 
-export class ShoppingCart { 
+export class ShoppingCart {
+  id: number;
   items: ShoppingCartItem[] = [];
 
-  constructor(private itemsMap: { [productId: string]: ShoppingCartItem }) {
+  /* constructor(private itemsMap: { [productId: number]: ShoppingCartItem }) {
     this.itemsMap = itemsMap || {};
     
     for (let productId in itemsMap) {
       let item = itemsMap[productId];
-      this.items.push(new ShoppingCartItem({ ...item, $key: productId }));
+      this.items.push(new ShoppingCartItem({ ...item, id: productId }));
     }
   }
 
   getQuantity(product: Product) {
-    let item = this.itemsMap[product.$key];
+    let item = this.itemsMap[product.id];
     return item ? item.quantity : 0;
   }
   
@@ -30,5 +31,5 @@ export class ShoppingCart {
     for (let productId in this.itemsMap) 
       count += this.itemsMap[productId].quantity;
     return count;
-  }
+  } */
 }

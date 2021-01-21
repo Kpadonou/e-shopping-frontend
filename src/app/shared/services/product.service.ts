@@ -9,25 +9,26 @@ import { Product } from '../models/product';
 export class ProductService {
   constructor(private httpClient: HttpClient) {}
 
-  public getProductById(id: number) {
-    return this.httpClient.get(`${environment.apiUrl}/product/id/${id}`);
+  public getById(id: number) {
+    return this.httpClient.get<Product>(`${environment.apiUrl}/products/${id}`);
   }
 
-  public getProducts() {
-    return this.httpClient.get<Product[]>(`${environment.apiUrl}/product/all`);
+  public getAll() {
+    return this.httpClient.get<Product[]>(`${environment.apiUrl}/products`);
   }
 
-  public createProduct(product: Product) {
-    return this.httpClient.post(`${environment.apiUrl}/product/save`, product);
+  public create(product: Product) {
+    return this.httpClient.post(`${environment.apiUrl}/products`, product);
   }
 
-  public updateProduct(product: Product) {
-    return this.httpClient.put(`${environment.apiUrl}/product/update`, product);
-  }
-
-  public deleteProduct(id: number) {
-    return this.httpClient.delete(
-      `${environment.apiUrl}/product/delete/id/${id}`
+  public update(product: Product) {
+    return this.httpClient.put(
+      `${environment.apiUrl}/products/${product.id}`,
+      product
     );
+  }
+
+  public delete(id: number) {
+    return this.httpClient.delete(`${environment.apiUrl}/products/${id}`);
   }
 }

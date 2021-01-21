@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 
 @Component({
@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
 
@@ -28,7 +29,8 @@ export class LoginComponent implements OnInit {
   signIn() {
     this.authService.login(this.loginForm.value).subscribe((resp) => {
       if (resp) {
-        this.router.navigate(['/core']);
+        let returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        this.router.navigate([returnUrl || '/']);
       } else {
         this.invalidLogin = true;
       }

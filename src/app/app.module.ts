@@ -16,7 +16,11 @@ import { AdminProductsComponent } from './admin/admin-products/admin-products.co
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
 import { LoginComponent } from './login/login.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProductFormComponent } from './admin/product-form/product-form.component';
+import { MatComponentsModule } from './mat-components/mat-components.module';
+import { ProductFilterComponent } from './products/product-filter/product-filter.component';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -31,17 +35,22 @@ import { ReactiveFormsModule } from '@angular/forms';
     AdminProductsComponent,
     AdminOrdersComponent,
     LoginComponent,
+    ProductFormComponent,
+    ProductFilterComponent,
+    ProductCardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     ReactiveFormsModule,
+    MatComponentsModule,
     HttpClientModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),
-        allowedDomains: ['localhost:4200'],
+        allowedDomains: ['localhost:8080'],
         disallowedRoutes: [],
       },
     }),

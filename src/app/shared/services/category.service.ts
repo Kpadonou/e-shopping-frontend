@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Category } from '../models/category';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,33 +10,32 @@ import { Category } from '../models/category';
 export class CategoryService {
   constructor(private httpClient: HttpClient) {}
 
-  public getCategoryById(id: number) {
-    return this.httpClient.get(`${environment.apiUrl}/category/id/${id}`);
+  public getCategoryById(id: number): Observable<Category> {
+    return this.httpClient.get(`${environment.apiUrl}/categories/id/${id}`);
+    // return this.httpClient.get(`${environment.apiUrl}/test/admin`);
   }
 
-  public getCategories() {
-    return this.httpClient.get<Category[]>(
-      `${environment.apiUrl}/category/all`
-    );
+  public getAll() {
+    return this.httpClient.get<Category[]>(`${environment.apiUrl}/categories`);
   }
 
   public createCategory(category: Category) {
     return this.httpClient.post(
-      `${environment.apiUrl}/category/save`,
+      `${environment.apiUrl}/categories/save`,
       category
     );
   }
 
   public updateCategory(category: Category) {
     return this.httpClient.put(
-      `${environment.apiUrl}/category/update`,
+      `${environment.apiUrl}/categories/update`,
       category
     );
   }
 
   public deleteCategory(id: number) {
     return this.httpClient.delete(
-      `${environment.apiUrl}/category/delete/id/${id}`
+      `${environment.apiUrl}/categories/delete/id/${id}`
     );
   }
 }

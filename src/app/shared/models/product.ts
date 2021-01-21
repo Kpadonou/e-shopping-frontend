@@ -1,8 +1,9 @@
+import { Category } from './category';
 
 export interface Product {
-  $key: string;
+  id: number;
   title: string;
   price: number;
-  category: string;
+  category: Category;
   imageUrl: string;
 }

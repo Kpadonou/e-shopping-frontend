@@ -9,14 +9,16 @@ import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { AdminProductsComponent } from './admin/admin-products/admin-products.component';
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
-import { AuthGuard } from './shared/guard/auth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { AdminAuthGuard } from './shared/guards/admin-auth.guard';
+import { ProductFormComponent } from './admin/product-form/product-form.component';
 
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
-  { path: '', component: HomeComponent },
+  { path: '', component: ProductsComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'login', component: LoginComponent },
 
@@ -30,14 +32,24 @@ const routes: Routes = [
   { path: 'my/orders', component: MyOrdersComponent, canActivate: [AuthGuard] },
 
   {
+    path: 'admin/products/new',
+    component: ProductFormComponent,
+    canActivate: [AuthGuard, AdminAuthGuard],
+  },
+  {
+    path: 'admin/products/:id',
+    component: ProductFormComponent,
+    canActivate: [AuthGuard, AdminAuthGuard],
+  },
+  {
     path: 'admin/products',
     component: AdminProductsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AdminAuthGuard],
   },
   {
     path: 'admin/orders',
     component: AdminOrdersComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AdminAuthGuard],
   },
   /* {
     path: 'shopping',
