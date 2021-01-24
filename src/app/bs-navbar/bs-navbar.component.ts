@@ -8,7 +8,7 @@ import { ShoppingCartService } from '../shared/services/shopping-cart.service';
   styleUrls: ['./bs-navbar.component.scss'],
 })
 export class BsNavbarComponent implements OnInit {
-  shoppingCartItemCount = 0;
+  shoppingCartItemCount: number;
   constructor(
     public authService: AuthService,
     private cartService: ShoppingCartService
@@ -16,25 +16,8 @@ export class BsNavbarComponent implements OnInit {
 
   ngOnInit() {
     this.cartService
-      .getItemsOfCart(+localStorage.getItem('cartId'))
-      .subscribe((items) => {
-        console.log(items);
-
-        this.shoppingCartItemCount = 0;
-        for (const item of items) {
-          this.shoppingCartItemCount += item.quantity;
-        }
-      });
-    /* this.cartService.getOrCreateCart().subscribe((cart) => {
-      console.log(cart);
-
-      this.cartService.getItemsOfCart(cart.id).subscribe((items) => {
-        this.shoppingCartItemCount = 0;
-        for (const item of items) {
-          this.shoppingCartItemCount += item.quantity;
-        }
-      });
-    }); */
+      .getTotalItemsAndPrice()
+      .subscribe((resp) => (this.shoppingCartItemCount = resp.totalItems));
   }
   logout() {
     this.authService.logout();

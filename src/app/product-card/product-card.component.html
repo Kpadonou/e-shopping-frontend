@@ -19,22 +19,10 @@
       Add to cart
     </button>
     <ng-template #updateQuantity>
-      <div class="row no-gutters">
-        <div class="col-2">
-          <button
-            (click)="removeFromCart()"
-            class="btn btn-secondary btn-block"
-          >
-            -
-          </button>
-        </div>
-        <div class="col text-center">{{ quantity }} in cart</div>
-        <div class="col-2">
-          <button (click)="addToCart()" class="btn btn-secondary btn-block">
-            +
-          </button>
-        </div>
-      </div>
+      <app-product-quantity
+        [product]="product"
+        [shopping-cart]="shoppingCart"
+      ></app-product-quantity>
     </ng-template>
   </div>
 </div>

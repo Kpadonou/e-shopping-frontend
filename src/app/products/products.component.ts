@@ -38,12 +38,8 @@ export class ProductsComponent implements OnInit {
         : this.products$;
     });
     // Get ShoppingCart
-    this.cartService.getOrCreateCart().subscribe((cart) => {
-      this.cartService.getItemsOfCart(cart.id).subscribe((items) => {
-        let c = cart;
-        c.items = items;
-        this.shoppingCart = c;
-      });
-    });
+    this.cartService
+      .getOrCreateCart()
+      .subscribe((cart) => (this.shoppingCart = cart));
   }
 }

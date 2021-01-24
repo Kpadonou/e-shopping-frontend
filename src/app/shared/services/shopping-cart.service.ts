@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { fromEvent, interval, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { fromEvent, interval, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Product } from '../models/product';
 import { ShoppingCart } from '../models/shopping-cart';
@@ -17,12 +17,6 @@ export class ShoppingCartService {
     private httpClient: HttpClient,
     private cartItemService: ShoppingCartItemService
   ) {}
-
-  public getCartById(id: number) {
-    return this.httpClient.get<ShoppingCart>(
-      `${environment.apiUrl}/shopping-carts/${id}`
-    );
-  }
 
   public getCarts() {
     return this.httpClient.get<ShoppingCart[]>(
@@ -43,49 +37,78 @@ export class ShoppingCartService {
     );
   }
 
+  public getCartById(id: number) {
+    return this.httpClient.get<ShoppingCart>(
+      `${environment.apiUrl}/shopping-carts/${id}`
+    );
+  }
+
+  public getTotalItemsAndPrice(): Observable<{
+    totalItems: number;
+    totalPrice: number;
+  }> {
+    return this.getOrCreateCart().pipe(
+      switchMap((cart) => {
+        let totalItems = 0;
+        let totalPrice = 0;
+        for (const item of cart.items) {
+          totalItems += item.quantity;
+          totalPrice += item.quantity * item.product.price;
+        }
+        return of({ totalItems: totalItems, totalPrice: totalPrice });
+      })
+    );
+  }
+
   public getOrCreateCart(): Observable<ShoppingCart> {
     let cartId = localStorage.getItem('cartId');
-    if (cartId) return this.getCartById(+cartId);
+    if (cartId) {
+      return this.getCartById(+cartId).pipe(
+        switchMap((cart) => this.getItemsOfCart(cart.id)),
+        map((items) => {
+          let c = new ShoppingCart(items, +cartId);
+          console.log(c);
 
-    let cart = new ShoppingCart();
+          return c;
+        })
+      );
+    }
+
+    let cart = new ShoppingCart([]);
     return this.create(cart);
   }
 
   addToCart(product: Product) {
-    this.getOrCreateCart()
-      .pipe(
-        switchMap((cart) => {
-          // If new cart
-          if (!localStorage.getItem('cartId')) {
-            localStorage.setItem('cartId', `${cart.id}`);
-          }
-          this.shoppinCart = cart;
-          return this.getItemsOfCart(cart.id);
-        })
-      )
-      .subscribe(
-        (items) => {
-          let item = items.find((item) => item.product.id === product.id);
-          // If product already exists in the ShoppingCart
-          if (item) {
-            item.quantity++;
-            this.cartItemService.update(item).subscribe();
-            // this.
-          } else {
-            item = new ShoppingCartItem();
-            item.product = product;
-            item.quantity = 1;
-            item.shoppingCart = this.shoppinCart;
-            this.cartItemService.create(item).subscribe((r) => {
-              alert('Product added successfully into the cart');
-              return true;
-            });
-          }
-        },
-        () => {
-          return false;
+    this.getOrCreateCart().pipe(
+      map((cart) => {
+        // If new cart
+        if (!localStorage.getItem('cartId')) {
+          localStorage.setItem('cartId', `${cart.id}`);
         }
-      );
+        this.shoppinCart = cart;
+        let item = cart.items.find((item) => item.product.id === product.id);
+        // If product already exists in the ShoppingCart
+        if (item) {
+          item.quantity++;
+          this.cartItemService.update(item).pipe(
+            map(() => {
+              return true;
+            })
+          );
+          // this.
+        } else {
+          item = new ShoppingCartItem();
+          item.product = product;
+          item.quantity = 1;
+          item.shoppingCart = this.shoppinCart;
+          this.cartItemService.create(item).pipe(
+            map(() => {
+              return true;
+            })
+          );
+        }
+      })
+    );
   }
 
   removeFromCart(cart: ShoppingCart, product: Product) {
