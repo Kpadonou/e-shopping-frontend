@@ -21,7 +21,7 @@ export class AdminAuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.currentUser.roles.some(
+    return this.authService.currentUser.user.authorities.some(
       (role) => role.authority === 'ROLE_ADMIN'
     );
   }

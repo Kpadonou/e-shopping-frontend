@@ -10,8 +10,8 @@ import { Observable } from 'rxjs';
 export class CategoryService {
   constructor(private httpClient: HttpClient) {}
 
-  public getCategoryById(id: number): Observable<Category> {
-    return this.httpClient.get(`${environment.apiUrl}/categories/id/${id}`);
+  public getById(id: number): Observable<Category> {
+    return this.httpClient.get(`${environment.apiUrl}/categories/${id}`);
     // return this.httpClient.get(`${environment.apiUrl}/test/admin`);
   }
 
@@ -19,23 +19,18 @@ export class CategoryService {
     return this.httpClient.get<Category[]>(`${environment.apiUrl}/categories`);
   }
 
-  public createCategory(category: Category) {
-    return this.httpClient.post(
-      `${environment.apiUrl}/categories/save`,
-      category
-    );
+  public create(category: Category) {
+    return this.httpClient.post(`${environment.apiUrl}/categories`, category);
   }
 
-  public updateCategory(category: Category) {
+  public update(category: Category) {
     return this.httpClient.put(
-      `${environment.apiUrl}/categories/update`,
+      `${environment.apiUrl}/categories/${category.id}`,
       category
     );
   }
 
-  public deleteCategory(id: number) {
-    return this.httpClient.delete(
-      `${environment.apiUrl}/categories/delete/id/${id}`
-    );
+  public delete(id: number) {
+    return this.httpClient.delete(`${environment.apiUrl}/categories/${id}`);
   }
 }

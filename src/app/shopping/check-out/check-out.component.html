@@ -1,0 +1,10 @@
+<!-- <pre>{{ form.value | json }}</pre> -->
+<h1><strong>Shipping</strong></h1>
+<div class="row" *ngIf="cart$ | async as cart">
+  <div class="col">
+    <app-shipping-form [cart]="cart"></app-shipping-form>
+  </div>
+  <div class="col">
+    <app-shopping-cart-summary [cart]="cart"></app-shopping-cart-summary>
+  </div>
+</div>

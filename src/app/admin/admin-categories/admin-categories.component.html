@@ -1,0 +1,49 @@
+<!-- <a routerLink="/admin/products/new" class="btn btn-primary mb-3"
+  >New Category</a
+> -->
+<div class="row">
+  <div class="col">
+    <div class="card p-4">
+      <h3><strong>New Category</strong></h3>
+      <app-category-form
+        (onNewCategory)="refresh($event)"
+        [categoryToEdit]="categoryToEdit"
+      ></app-category-form>
+    </div>
+  </div>
+  <div class="col">
+    <p>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        #query
+        (keyup)="filter(query.value)"
+      />
+    </p>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of filteredCategories$ | async">
+          <td>{{ c.name }}</td>
+          <td>
+            <button class="btn btn-secondary" (click)="sendToForm(c)">
+              Edit
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="delete(c.id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

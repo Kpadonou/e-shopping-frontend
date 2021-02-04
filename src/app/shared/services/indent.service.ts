@@ -10,25 +10,32 @@ export class IndentService {
   constructor(private httpClient: HttpClient) {}
 
   public getIndentById(id: number) {
-    return this.httpClient.get(`${environment.apiUrl}/indent/id/${id}`);
+    return this.httpClient.get(`${environment.apiUrl}/indents/${id}`);
   }
 
   public getIndents() {
-    return this.httpClient.get(`${environment.apiUrl}/indent/all`);
+    return this.httpClient.get(`${environment.apiUrl}/indents`);
+  }
+
+  public getIndentsByUser(id: number) {
+    return this.httpClient.get<Indent[]>(
+      `${environment.apiUrl}/user/${id}/indents`
+    );
   }
 
   public createIndent(indent: Indent) {
-    return this.httpClient.post(`${environment.apiUrl}/indent/save`, indent);
+    return this.httpClient.post<Indent>(
+      `${environment.apiUrl}/indents`,
+      indent
+    );
   }
 
   public updateIndent(indent: Indent) {
-    return this.httpClient.put(`${environment.apiUrl}/indent/update`, indent);
+    return this.httpClient.put(`${environment.apiUrl}/indents`, indent);
   }
 
   public deleteIndent(id: number) {
-    return this.httpClient.delete(
-      `${environment.apiUrl}/indent/delete/id/${id}`
-    );
+    return this.httpClient.delete(`${environment.apiUrl}/indents/${id}`);
   }
 
   async placeOrder(order) {
