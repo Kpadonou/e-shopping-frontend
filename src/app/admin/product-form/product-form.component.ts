@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'ng2-validation';
 import { Observable } from 'rxjs';
@@ -8,15 +8,18 @@ import { ProductService } from '../../shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/shared/models/product';
 import { take } from 'rxjs/operators';
+import { SubSink } from 'subsink';
+import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss'],
 })
-export class ProductFormComponent implements OnInit {
+export class ProductFormComponent implements OnInit, OnDestroy {
   categories$: Observable<Category[]>;
   product: Product;
+  subs = new SubSink();
 
   form: FormGroup;
   constructor(
@@ -24,7 +27,8 @@ export class ProductFormComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +37,10 @@ export class ProductFormComponent implements OnInit {
       title: [null, Validators.required],
       price: [null, [Validators.required, Validators.min(0)]],
       category: [null, Validators.required],
-      imageUrl: [null, [Validators.required, CustomValidators.url]],
+      imageUrl: [
+        null,
+        [Validators.required, Validators.maxLength(255), CustomValidators.url],
+      ],
     });
     let id = this.route.snapshot.paramMap.get('id');
     if (id)
@@ -46,27 +53,42 @@ export class ProductFormComponent implements OnInit {
         });
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   save() {
     if (this.route.snapshot.paramMap.has('id')) {
       this.productService
         .update({ ...this.product, ...this.form.value })
         .pipe(take(1))
-        .subscribe(() => {
-          this.router.navigate(['admin/products']);
-        });
+        .subscribe(
+          () => {
+            this.toastService.showSuccess('Product updated successfully');
+            this.router.navigate(['admin/products']);
+          },
+          () => this.toastService.showError('Error while updating product')
+        );
     } else {
-      this.productService.create(this.form.value).subscribe((product) => {
-        this.router.navigate(['admin/products']);
-      });
+      this.subs.sink = this.productService.create(this.form.value).subscribe(
+        () => {
+          this.toastService.showSuccess('Product created successfully');
+          this.router.navigate(['admin/products']);
+        },
+        () => this.toastService.showError('Error while creating product')
+      );
     }
   }
 
   delete() {
     if (!this.route.snapshot.paramMap.has('id')) return;
     if (!confirm('Are you sure you want to delete this product?')) return;
-    this.productService.delete(this.product.id).subscribe(() => {
-      // this.router.navigate(['admin/products']);
-    });
+    (this.subs.sink = this.productService
+      .delete(this.product.id)
+      .subscribe(() =>
+        this.toastService.showSuccess('Product removed successfully')
+      )),
+      () => this.toastService.showError('Error while removing this product');
   }
 
   compareFn(obj1: any, obj2: any): boolean {

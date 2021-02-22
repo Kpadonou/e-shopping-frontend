@@ -1,34 +1,52 @@
-<a routerLink="/admin/products/new" class="btn btn-primary mb-3">New Product</a>
-<p>
-  <input
-    type="text"
-    class="form-control"
-    placeholder="Search..."
-    #query
-    (keyup)="filter(query.value)"
-  />
-</p>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Price</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let p of filteredProducts$ | async">
-      <td>{{ p.title }}</td>
-      <td>{{ p.price }}</td>
-      <td>
-        <a [routerLink]="['/admin/products/', p.id]">Edit</a>
-      </td>
-      <td>
-        <button class="btn btn-danger btn-sm" (click)="delete(p.id)">
-          Delete
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<h1><strong>Products</strong></h1>
+
+<div class="card p-4">
+  <div class="row">
+    <div class="col-md-10">
+      <p>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          #query
+          (keyup)="filter(query.value)"
+        />
+      </p>
+    </div>
+    <div class="col-md-2">
+      <a
+        routerLink="/admin/products/new"
+        class="btn btn-primary mb-3 float-md-right"
+        >New Product</a
+      >
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of filteredProducts$ | async">
+        <td>{{ p.title }}</td>
+        <td>{{ p.price }}</td>
+        <td>
+          <a [routerLink]="['/admin/products/', p.id]">Edit</a>
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="delete(p.id)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Toast -->
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

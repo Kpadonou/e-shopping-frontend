@@ -37,19 +37,4 @@ export class IndentService {
   public deleteIndent(id: number) {
     return this.httpClient.delete(`${environment.apiUrl}/indents/${id}`);
   }
-
-  async placeOrder(order) {
-    /*  let result = await this.db.list('/orders').push(order);
-    this.shoppingCartService.clearCart();
-    return result; */
-  }
-
-  getOrdersByUser(userId: string) {
-    /* return this.db.list('/orders', {
-      query: {
-        orderByChild: 'userId',
-        equalTo: userId
-      }
-    }); */
-  }
 }

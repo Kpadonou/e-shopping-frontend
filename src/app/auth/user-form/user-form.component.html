@@ -1,0 +1,92 @@
+<!-- <pre>{{ form.value | json }}</pre> -->
+
+<div class="row">
+  <div class="col">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          formControlName="username"
+          type="text"
+          class="form-control"
+          id="username"
+        />
+        <div
+          id="username"
+          class="alert alert-danger"
+          *ngIf="username.touched && username.invalid"
+        >
+          Name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          formControlName="email"
+          type="email"
+          class="form-control"
+          id="email"
+        />
+        <div
+          id="email"
+          class="alert alert-danger"
+          *ngIf="email.touched && email.errors?.required"
+        >
+          E-mail is required
+        </div>
+        <div
+          id="email"
+          class="alert alert-danger"
+          *ngIf="email.touched && email.errors?.email"
+        >
+          Wrong e-mail
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          formControlName="password"
+          type="password"
+          class="form-control"
+          id="password"
+        />
+        <div
+          id="password"
+          class="alert alert-danger"
+          *ngIf="password.touched && password.invalid"
+        >
+          Password is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select formControlName="roles" id="role" class="form-control">
+          <option *ngFor="let role of roles$ | async" [ngValue]="role">
+            {{ role.name }}
+          </option>
+        </select>
+        <div
+          id="role"
+          class="alert alert-danger"
+          *ngIf="roles.touched && roles.invalid"
+        >
+          Role is required
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button
+        type="button"
+        (click)="clearForm()"
+        class="btn btn-secondary float-right"
+      >
+        Reset
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<app-toasts aria-live="polite" aria-atomic="true"></app-toasts>

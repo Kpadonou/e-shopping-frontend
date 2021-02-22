@@ -1,33 +1,46 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../shared/services/product.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ToastService } from 'src/app/shared/services/toast.service';
+import { SubSink } from 'subsink';
+
 import { Product } from '../../shared/models/product';
-import { map, filter } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { ProductService } from '../../shared/services/product.service';
 
 @Component({
   selector: 'app-admin-products',
   templateUrl: './admin-products.component.html',
   styleUrls: ['./admin-products.component.scss'],
 })
-export class AdminProductsComponent implements OnInit {
+export class AdminProductsComponent implements OnInit, OnDestroy {
   products$: Observable<Product[]>;
   filteredProducts$: Observable<Product[]>;
-  constructor(private productService: ProductService, private router: Router) {}
+  subs = new SubSink();
+  constructor(
+    private productService: ProductService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.products$ = this.productService.getAll();
     this.filteredProducts$ = this.productService.getAll();
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   delete(id: number) {
     if (!confirm('Are you sure you want to delete this product?')) return;
-    this.productService.delete(id).subscribe(() => {
-      this.products$ = this.products$.pipe(
-        map((result) => result.filter((product) => product.id !== id))
-      );
-      alert('Product deleted successfully !');
-    });
+    this.subs.sink = this.productService.delete(id).subscribe(
+      () => {
+        this.ngOnInit();
+        this.toastService.showSuccess('Product deleted successfully');
+      },
+      () => {
+        this.toastService.showError('Error while removing product');
+      }
+    );
   }
 
   filter(query: string) {

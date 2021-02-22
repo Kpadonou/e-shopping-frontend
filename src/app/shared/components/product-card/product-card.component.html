@@ -22,7 +22,10 @@
       Add to cart
     </button>
     <ng-template #updateQuantity>
-      <app-product-quantity [product]="product"></app-product-quantity>
+      <app-product-quantity
+        [product]="product"
+        (onItemDelete)="showAddButton()"
+      ></app-product-quantity>
     </ng-template>
   </div>
 </div>

@@ -1,4 +1,6 @@
+import { Role } from './role';
 export class User {
+  roles: Role[];
   constructor(
     public id?: number,
     public username?: string,

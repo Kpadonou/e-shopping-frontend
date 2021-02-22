@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   invalidLogin = false;
+  subs = new SubSink();
 
   constructor(
     private fb: FormBuilder,
@@ -26,14 +28,20 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   signIn() {
-    this.authService.login(this.loginForm.value).subscribe((resp) => {
-      if (resp) {
-        let returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        this.router.navigate([returnUrl || '/']);
-      } else {
-        this.invalidLogin = true;
-      }
-    });
+    this.subs.sink = this.authService
+      .login(this.loginForm.value)
+      .subscribe((resp) => {
+        if (resp) {
+          let returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          this.router.navigate([returnUrl || '/']);
+        } else {
+          this.invalidLogin = true;
+        }
+      });
   }
 }

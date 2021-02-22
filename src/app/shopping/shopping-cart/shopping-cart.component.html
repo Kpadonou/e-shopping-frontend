@@ -33,7 +33,10 @@
         </th>
         <td class="pt-4">{{ item.product.title }}</td>
         <td class="pt-4">
-          <app-product-quantity [product]="item.product"></app-product-quantity>
+          <app-product-quantity
+            [product]="item.product"
+            (onQuantityChange)="updateQuantity($event)"
+          ></app-product-quantity>
         </td>
         <td class="text-right pt-4">
           {{ item.product.price * item.quantity | currency: "USD":true }}
@@ -60,10 +63,3 @@
     </tfoot>
   </table>
 </div>
-<!-- <div class="row col-10" *ngIf="cart$ | async as cart">
-  
-  
-  <a *ngIf="cart.items?.length" routerLink="/check-out" class="btn btn-primary"
-    >Check Out</a
-  >
-</div> -->

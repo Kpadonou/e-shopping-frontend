@@ -1,13 +1,15 @@
-<h1><strong>Categories</strong></h1>
-
+<!-- <a routerLink="/admin/products/new" class="btn btn-primary mb-3"
+  >New User</a
+> -->
+<h1><strong>Users</strong></h1>
 <div class="row">
   <div class="col">
     <div class="card p-4">
-      <h3><strong>New Category</strong></h3>
-      <app-category-form
-        (onNewCategory)="refresh($event)"
-        [categoryToEdit]="categoryToEdit"
-      ></app-category-form>
+      <h3><strong>New User</strong></h3>
+      <app-user-form
+        (onNewUser)="refresh($event)"
+        [userToEdit]="userToEdit"
+      ></app-user-form>
     </div>
   </div>
   <div class="col">
@@ -29,8 +31,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let c of filteredCategories$ | async">
-          <td>{{ c.name }}</td>
+        <tr *ngFor="let c of filteredUsers$ | async">
+          <td>{{ c.username }}</td>
           <td>
             <button class="btn btn-secondary" (click)="sendToForm(c)">
               Edit

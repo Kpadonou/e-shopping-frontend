@@ -49,7 +49,16 @@ export class ShoppingCartService {
       return this.getCartById(+cartId).pipe(
         switchMap((cart) => this.getItemsOfCart(cart.id)),
         map((items) => {
-          let c = new ShoppingCart(items, +cartId);
+          const sortedItems = items.sort((a, b) => {
+            if (a.product.title.toLowerCase() < b.product.title.toLowerCase()) {
+              return -1;
+            }
+            if (a.product.title.toLowerCase() > b.product.title.toLowerCase()) {
+              return 1;
+            }
+            return 0;
+          });
+          let c = new ShoppingCart(sortedItems, +cartId);
           return c;
         })
       );
@@ -57,34 +66,29 @@ export class ShoppingCartService {
     let cart = new ShoppingCart([]);
     return this.create(cart).pipe(
       map((createdCart) => {
+        localStorage.setItem('cartId', `${createdCart.id}`);
         let c = new ShoppingCart([], createdCart.id);
         return c;
       })
     );
   }
 
-  addToCart(product: Product): Observable<ShoppingCartItem> {
-    return this.getOrCreateCart().pipe(
-      switchMap((cart) => {
-        // If new cart
-        if (!localStorage.getItem('cartId')) {
-          localStorage.setItem('cartId', `${cart.id}`);
-        }
-        this.shoppinCart = cart;
-        let item = cart.items.find((item) => item.product.id === product.id);
-        // If product already exists in the ShoppingCart
-        if (item) {
-          item.quantity++;
-          return this.cartItemService.update(item);
-        } else {
-          item = new ShoppingCartItem();
-          item.product = product;
-          item.quantity = 1;
-          item.shoppingCart = this.shoppinCart;
-          return this.cartItemService.create(item);
-        }
-      })
-    );
+  addToCart(
+    cart: ShoppingCart,
+    product: Product
+  ): Observable<ShoppingCartItem> {
+    let item = cart.items.find((item) => item.product.id === product.id);
+    // If product already exists in the ShoppingCart
+    if (item) {
+      item.quantity++;
+      return this.cartItemService.update(item);
+    } else {
+      item = new ShoppingCartItem();
+      item.product = product;
+      item.quantity = 1;
+      item.shoppingCart = cart;
+      return this.cartItemService.create(item);
+    }
   }
 
   removeFromCart(
@@ -114,8 +118,4 @@ export class ShoppingCartService {
       `${environment.apiUrl}/shopping-carts/delete/${id}`
     );
   }
-
-  /* clearCart() {
-    this.getOrCreateCart().pipe()
-  } */
 }

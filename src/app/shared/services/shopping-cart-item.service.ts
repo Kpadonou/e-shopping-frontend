@@ -22,12 +22,6 @@ export class ShoppingCartItemService {
     );
   }
 
-  /* public getItemsByCart(cartId: number) {
-    return this.httpClient.get<ShoppingCartItem[]>(
-      `${environment.apiUrl}/cart/${cartId}/shopping-cart-items`
-    );
-  } */
-
   public create(item: ShoppingCartItem) {
     return this.httpClient.post<ShoppingCartItem>(
       `${environment.apiUrl}/shopping-cart-items`,

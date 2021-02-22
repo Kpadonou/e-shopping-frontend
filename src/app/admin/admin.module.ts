@@ -9,14 +9,18 @@ import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
 import { AdminProductsComponent } from './admin-products/admin-products.component';
 import { CategoryFormComponent } from './category-form/category-form.component';
 import { ProductFormComponent } from './product-form/product-form.component';
+import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { UserFormComponent } from './user-form/user-form.component';
 
 @NgModule({
   declarations: [
     AdminOrdersComponent,
     AdminProductsComponent,
     AdminCategoriesComponent,
+    AdminUsersComponent,
     ProductFormComponent,
     CategoryFormComponent,
+    UserFormComponent,
   ],
   imports: [
     SharedModule,
@@ -36,7 +40,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
         component: AdminProductsComponent,
         canActivate: [AuthGuard, AdminAuthGuard],
       },
-      {
+      /* {
         path: 'admin/categories/new',
         component: CategoryFormComponent,
         canActivate: [AuthGuard, AdminAuthGuard],
@@ -45,10 +49,15 @@ import { ProductFormComponent } from './product-form/product-form.component';
         path: 'admin/categories/:id',
         component: CategoryFormComponent,
         canActivate: [AuthGuard, AdminAuthGuard],
-      },
+      }, */
       {
         path: 'admin/categories',
         component: AdminCategoriesComponent,
+        canActivate: [AuthGuard, AdminAuthGuard],
+      },
+      {
+        path: 'admin/users',
+        component: AdminUsersComponent,
         canActivate: [AuthGuard, AdminAuthGuard],
       },
       {
