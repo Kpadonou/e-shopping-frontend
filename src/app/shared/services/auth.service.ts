@@ -30,8 +30,7 @@ export class AuthService {
             return true;
           }
           return false;
-        }) /* ,
-        catchError((error) => Observable.throw(error))); */
+        })
       );
   }
 
