@@ -28,7 +28,10 @@ import { AuthModule } from './auth/auth.module';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),
-        allowedDomains: ['localhost:8080'],
+        allowedDomains: [
+          'localhost:8080',
+          'https://e-shopping-backend.herokuapp.com',
+        ],
         disallowedRoutes: [],
       },
     }),
