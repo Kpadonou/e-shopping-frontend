@@ -28,11 +28,11 @@ import { AuthModule } from './auth/auth.module';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),
-        allowedDomains: [
-          'localhost:8080',
-          'https://e-shopping-backend.herokuapp.com',
+        allowedDomains: ['localhost:8080', 'e-shopping-backend.herokuapp.com'],
+        disallowedRoutes: [
+          'http://localhost:8080/api/auth/signin',
+          'https://e-shopping-backend.herokuapp.com/api/auth/signin',
         ],
-        disallowedRoutes: [],
       },
     }),
   ],
@@ -41,3 +41,5 @@ import { AuthModule } from './auth/auth.module';
 })
 export class AppModule {}
 // ng generate module orders --route orders --module app.module
+// 'http://localhost:8080/api/auth/signin',
+// 'https://e-shopping-backend.herokuapp.com/api/auth/signin',
