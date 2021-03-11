@@ -1,21 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Role } from 'src/app/shared/models/role';
-import { User } from 'src/app/shared/models/user';
+import { ToastService } from 'src/app/shared/services/toast.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { SubSink } from 'subsink';
-import { OnDestroy } from '@angular/core';
-import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
   selector: 'app-user-form',
@@ -35,7 +25,11 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.roles$ = this.userService.getAllRoles();
+    this.roles$ = this.userService
+      .getAllRoles()
+      .pipe(
+        map((roles) => roles.filter((role) => role.name !== 'ROLE_MODERATOR'))
+      );
   }
 
   ngOnDestroy(): void {
