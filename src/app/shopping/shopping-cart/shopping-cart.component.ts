@@ -43,7 +43,7 @@ export class ShoppingCartComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateQuantity(event: boolean) {
+  updateQuantity(event) {
     if (event) this.ngOnInit();
   }
 }
