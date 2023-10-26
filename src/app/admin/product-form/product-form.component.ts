@@ -37,11 +37,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       title: [null, Validators.required],
       price: [null, [Validators.required, Validators.min(0)]],
       category: [null, Validators.required],
-      imageUrl: [
-        null,
-        [Validators.required, Validators.maxLength(255), CustomValidators.url],
-      ],
-    });
+      imageUrl: [null, [Validators.required, Validators.maxLength(255)]],
+    }); // , CustomValidators.url
     let id = this.route.snapshot.paramMap.get('id');
     if (id)
       this.productService
